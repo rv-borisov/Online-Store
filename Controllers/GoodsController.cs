@@ -32,7 +32,6 @@ namespace Online_Store.Controllers
             _db.SaveChanges();
             return RedirectToAction("Index");
         }
-
         public IActionResult Delete(Goods good)
         {
             _db.Remove(good);
