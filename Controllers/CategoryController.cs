@@ -57,6 +57,7 @@ namespace Online_Store.Controllers
             }
             return View(obj);
         }
+
         //POST - EDIT
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -71,5 +72,35 @@ namespace Online_Store.Controllers
             return View(obj);
         }
 
+        //GET - EDIT
+        [HttpGet]
+        public IActionResult Delete(int? id)
+        {
+            if (id == null || id == 0)
+            {
+                return NotFound();
+            }
+            var obj = _db.Category.Find(id);
+            if (obj == null)
+            {
+                return NotFound();
+            }
+            return View(obj);
+        }
+
+        //POST - EDIT
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult DeletePost(int? id)
+        {
+            var obj = _db.Category.Find(id);
+            if (obj == null)
+            {
+                return NotFound();
+            }
+            _db.Category.Remove(obj);
+            _db.SaveChanges();
+            return RedirectToAction("Index");
+        }
     }
 }
