@@ -42,6 +42,7 @@ namespace Online_Store.Controllers
             }
             return View(obj);
         }
+
         //GET - EDIT
         [HttpGet]
         public IActionResult Edit(int? id)
@@ -72,7 +73,7 @@ namespace Online_Store.Controllers
             return View(obj);
         }
 
-        //GET - EDIT
+        //GET - Delete
         [HttpGet]
         public IActionResult Delete(int? id)
         {
@@ -88,7 +89,7 @@ namespace Online_Store.Controllers
             return View(obj);
         }
 
-        //POST - EDIT
+        //POST - Delete
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult DeletePost(int? id)
