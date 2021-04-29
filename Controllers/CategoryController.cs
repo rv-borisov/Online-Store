@@ -28,7 +28,6 @@ namespace Online_Store.Controllers
         {
             return View();
         }
-
         //POST - CREATE
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -58,7 +57,6 @@ namespace Online_Store.Controllers
             }
             return View(obj);
         }
-
         //POST - EDIT
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -88,7 +86,6 @@ namespace Online_Store.Controllers
             }
             return View(obj);
         }
-
         //POST - Delete
         [HttpPost]
         [ValidateAntiForgeryToken]
