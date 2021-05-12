@@ -30,6 +30,7 @@ namespace Online_Store.Controllers
             foreach (var obj in objList)
             {
                 obj.Category = _db.Category.FirstOrDefault(u => u.Id == obj.CategoryId);
+                obj.ApplicationType = _db.ApplicationType.FirstOrDefault(u => u.Id == obj.ApplicationTypeId);
             }
 
             return View(objList);
@@ -39,21 +40,15 @@ namespace Online_Store.Controllers
         [HttpGet]
         public IActionResult Upsert(int? id)
         {
-            //IEnumerable<SelectListItem> CategoryDropDown = _db.Category.Select(i => new SelectListItem
-            //{
-            //    Text = i.Name,
-            //    Value = i.Id.ToString()
-            //});
-
-            ////ViewBag.CategoryDropDown = CategoryDropDown;
-            //ViewData["CategoryDropDown"] = CategoryDropDown;
-
-            //Product product = new Product();
-
             ProductVM productVM = new ProductVM()
             {
                 Product = new Product(),
                 CategorySelectList = _db.Category.Select(i => new SelectListItem
+                {
+                    Text = i.Name,
+                    Value = i.Id.ToString()
+                }),
+                ApplicationTypeSelectList = _db.ApplicationType.Select(i => new SelectListItem
                 {
                     Text = i.Name,
                     Value = i.Id.ToString()
@@ -135,6 +130,11 @@ namespace Online_Store.Controllers
                 Text = i.Name,
                 Value = i.Id.ToString()
             });
+            productVM.ApplicationTypeSelectList = _db.ApplicationType.Select(i => new SelectListItem
+            {
+                Text = i.Name,
+                Value = i.Id.ToString()
+            });
             return View(productVM);
         }
 
@@ -142,30 +142,40 @@ namespace Online_Store.Controllers
         [HttpGet]
         public IActionResult Delete(int? id)
         {
-            if (id == null || id == 0)
+            if(id == null || id == 0)
             {
                 return NotFound();
             }
-            var obj = _db.Category.Find(id);
-            if (obj == null)
+            Product product = _db.Product.Include(u => u.Category).Include(u => u.ApplicationType).FirstOrDefault(u => u.Id == id);
+            if (product == null)
             {
                 return NotFound();
             }
-            return View(obj);
+            return View(product);
         }
         //POST - Delete
-        [HttpPost]
+        [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public IActionResult DeletePost(int? id)
         {
-            var obj = _db.Category.Find(id);
+            var obj = _db.Product.Find(id);
             if (obj == null)
             {
                 return NotFound();
             }
-            _db.Category.Remove(obj);
+            string delete = _webHostEnvironment.WebRootPath + WC.ImagePath;
+            var oldFile = Path.Combine(delete, obj.Image);
+
+            if (System.IO.File.Exists(oldFile))
+            {
+                System.IO.File.Delete(oldFile);
+            }
+
+            _db.Product.Remove(obj);
             _db.SaveChanges();
+
             return RedirectToAction("Index");
+
         }
     }
 }
